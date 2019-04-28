@@ -1,22 +1,17 @@
-from flask import jsonify, request
+from flask import request
 from . import api
 from .consts import Auth
 from .authapi import AuthAPI
+from .utils import jsonerr, jsonsucc
 
 
 @api.route('/login')
 def login():
     result = _login()
     if result['login_state'] == Auth.SUCC:
-        response = jsonify({
-            'code': 0,
-            'data': result['userinfo']
-        })
+        response = jsonsucc(result['userinfo'])
     else:
-        response = jsonify({
-            'code': -1,
-            'error': result['error']
-        })
+        response = jsonerr(-1, result['error'])
     return response
 
 

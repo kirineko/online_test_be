@@ -4,6 +4,8 @@ import os
 import time
 import json
 import base64
+
+from flask import jsonify
 from Crypto.Cipher import AES
 
 from ..models import CSessionInfo
@@ -17,6 +19,39 @@ def ksort(d):
 def hash_hmac(algo, data, key):
     res = hmac.new(key.encode(), data.encode(), algo).digest()
     return res
+
+
+def decrypt(sessionKey, encryptedData, iv):
+        # base64 decode
+        sessionKey = base64.b64decode(sessionKey)
+        encryptedData = base64.b64decode(encryptedData)
+        iv = base64.b64decode(iv)
+
+        cipher = AES.new(sessionKey, AES.MODE_CBC, iv)
+
+        decrypted = json.loads(_unpad(cipher.decrypt(encryptedData)))
+
+        return decrypted
+
+
+def _unpad(s):
+    return s[:-ord(s[len(s) - 1:])]
+
+
+def jsonsucc(data):
+    return jsonify({
+        'code': 0,
+        'data': data
+    })
+
+
+def jsonerr(code, msg):
+    return jsonify({
+        'code': code,
+        'data': {
+            'msg': msg
+        }
+    })
 
 
 def storeUserInfo(userinfo, skey, session_key):
@@ -49,20 +84,3 @@ def storeUserInfo(userinfo, skey, session_key):
         res.user_info = user_info
         db.session.add(res)
         db.session.commit()
-
-
-def decrypt(sessionKey, encryptedData, iv):
-        # base64 decode
-        sessionKey = base64.b64decode(sessionKey)
-        encryptedData = base64.b64decode(encryptedData)
-        iv = base64.b64decode(iv)
-
-        cipher = AES.new(sessionKey, AES.MODE_CBC, iv)
-
-        decrypted = json.loads(_unpad(cipher.decrypt(encryptedData)))
-
-        return decrypted
-
-
-def _unpad(s):
-    return s[:-ord(s[len(s) - 1:])]
