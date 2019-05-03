@@ -6,7 +6,8 @@ import json
 import base64
 
 from flask import jsonify
-from Crypto.Cipher import AES
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 
 from ..models import CSessionInfo
 from .. import db
@@ -23,14 +24,16 @@ def hash_hmac(algo, data, key):
 
 def decrypt(sessionKey, encryptedData, iv):
         # base64 decode
-        sessionKey = base64.b64decode(sessionKey)
+        key = base64.b64decode(sessionKey)
         encryptedData = base64.b64decode(encryptedData)
         iv = base64.b64decode(iv)
 
-        cipher = AES.new(sessionKey, AES.MODE_CBC, iv)
+        backend = default_backend()
+        cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
+        decryptor = cipher.decryptor()
+        result = decryptor.update(encryptedData) + decryptor.finalize()
 
-        decrypted = json.loads(_unpad(cipher.decrypt(encryptedData)))
-
+        decrypted = json.loads(_unpad(result))
         return decrypted
 
 
