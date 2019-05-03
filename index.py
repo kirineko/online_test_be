@@ -1,6 +1,6 @@
 import os
 from app import create_app, db
-from app.models import Answer, Question, Book, Comment, CSessionInfo
+from app.models import Answer, Question, Exam, CSessionInfo
 from flask_migrate import Migrate
 
 app = create_app(os.getenv('FLASK_ENV') or 'default')
@@ -13,7 +13,6 @@ def make_shell_context():
         db=db,
         Answer=Answer,
         Question=Question,
-        Book=Book,
-        Comment=Comment,
+        Exam=Exam,
         CSessionInfo=CSessionInfo
     )

@@ -24,11 +24,10 @@ def create_app(config_name):
     app.register_blueprint(api_blueprint, url_prefix='/weapp')
 
     # 配置flask-admin模型视图
-    from .models import Answer, Question, Book, Comment, CSessionInfo
+    from .models import Answer, Question, Exam, CSessionInfo
     admin.add_view(ModelView(Answer, db.session))
     admin.add_view(ModelView(Question, db.session))
-    admin.add_view(ModelView(Book, db.session))
-    admin.add_view(ModelView(Comment, db.session))
+    admin.add_view(ModelView(Exam, db.session))
     admin.add_view(ModelView(CSessionInfo, db.session))
 
     return app

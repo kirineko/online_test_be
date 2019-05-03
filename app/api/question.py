@@ -8,7 +8,8 @@ from ..models import Question
 def question():
     args = request.values
     num = args.get('num', 1)
-    q = Question.query.filter_by(num=num).first()
+    gid = args.get('gid', 1)
+    q = Question.query.filter_by(gid=gid).filter_by(num=num).first()
     if q is None:
         return jsonerr(-1, '没有题目啦~')
     dict_q = q.__dict__

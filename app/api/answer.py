@@ -2,7 +2,7 @@ import json
 import time
 from flask import request
 from . import api
-from .utils import jsonsucc
+from .utils import jsonsucc, jsonerr
 from .. import db
 from ..models import Question, Answer
 
@@ -32,10 +32,43 @@ def postanswer():
     return jsonsucc(answer_to_db)
 
 
+@api.route('/getanswer', methods=['get'])
+def getanswer():
+    args = request.values
+    openid = args.get('openid')
+    gid = args.get('gid')
+
+    answer = Answer.query.filter_by(openid=openid).filter_by(gid=gid).first()
+    if answer is None:
+        return jsonerr(-1, '获取答案失败')
+    submit_answers = json.loads(answer.answers)
+
+    question_list = Question.query.filter_by(gid=gid).order_by(Question.num).all()
+    std_answers = [{'num': q.num, 'answer': q.answer, 'score': q.score} for q in question_list]
+
+    results = _getscore(submit_answers, std_answers)
+    results['gname'] = answer.gname
+    print(answer.submit_time)
+    results['submit_time'] = str(answer.submit_time)
+    return jsonsucc(results)
+
+
+@api.route('/getuseranswer', methods=['get'])
+def getuseranswer():
+    args = request.values
+    openid = args.get('openid')
+    gid = args.get('gid')
+
+    answer = Answer.query.filter_by(openid=openid).filter_by(gid=gid).first()
+    if answer is None:
+        return jsonsucc('')
+    return jsonsucc(json.loads(answer.answers))
+
+
 def _getscore(submit_answers, std_answers):
     results = {}
-    wrong_answers = []
     total = 0
+    data = []
 
     for std_answer in std_answers:
         num = std_answer['num']
@@ -44,14 +77,15 @@ def _getscore(submit_answers, std_answers):
         for s_num, s_answer in submit_answers.items():
             if num == int(s_num):
                 score_got = score if answer == s_answer else 0
-                if answer != s_answer:
-                    wrong_answers.append(num)
-                results[num] = {
-                    'score': score_got,
-                    'answer': answer
-                }
+
+                data.append({
+                    'num': num,
+                    'user_answer': s_answer,
+                    'std_answer': answer,
+                    'right': answer == s_answer
+                })
                 total += score_got
 
-    results['wrong_answers'] = wrong_answers
+    results['data'] = data
     results['total'] = total
     return results
