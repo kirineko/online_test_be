@@ -17,6 +17,7 @@ python-dotenv = "*"
 autopep8 = "*"
 cryptography = "*"
 requests = "*"
+flask-babelex = "*"
 
 [requires]
 python_version = "3.7"

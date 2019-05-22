@@ -23,18 +23,18 @@ def hash_hmac(algo, data, key):
 
 
 def decrypt(sessionKey, encryptedData, iv):
-        # base64 decode
-        key = base64.b64decode(sessionKey)
-        encryptedData = base64.b64decode(encryptedData)
-        iv = base64.b64decode(iv)
+    # base64 decode
+    key = base64.b64decode(sessionKey)
+    encryptedData = base64.b64decode(encryptedData)
+    iv = base64.b64decode(iv)
 
-        backend = default_backend()
-        cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
-        decryptor = cipher.decryptor()
-        result = decryptor.update(encryptedData) + decryptor.finalize()
+    backend = default_backend()
+    cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=backend)
+    decryptor = cipher.decryptor()
+    result = decryptor.update(encryptedData) + decryptor.finalize()
 
-        decrypted = json.loads(_unpad(result))
-        return decrypted
+    decrypted = json.loads(_unpad(result))
+    return decrypted
 
 
 def _unpad(s):

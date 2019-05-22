@@ -21,8 +21,10 @@ class CSessionInfo(db.Model):
     skey = db.Column(db.String(100, 'utf8mb4_unicode_ci'), nullable=False)
     create_time = db.Column(db.DATETIME, nullable=False)
     last_visit_time = db.Column(db.DATETIME, nullable=False)
-    session_key = db.Column(db.String(100, 'utf8mb4_unicode_ci'), nullable=False)
-    user_info = db.Column(db.String(2048, 'utf8mb4_unicode_ci'), nullable=False)
+    session_key = db.Column(
+        db.String(100, 'utf8mb4_unicode_ci'), nullable=False)
+    user_info = db.Column(
+        db.String(2048, 'utf8mb4_unicode_ci'), nullable=False)
 
 
 class Question(db.Model):
