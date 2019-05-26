@@ -1,0 +1,48 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+{{ super() }}
+<div class="row-fluid">
+
+    <div>
+        {% if current_user.is_authenticated %}
+        <p class="lead">
+            你好，{{ current_user.username }}
+        </p>
+        <p>
+            欢迎进入微信测试小程序管理平台，点击进入下列功能
+        </p>
+        <ul>
+            {% if  current_user.role == 1 %}
+            <li><a href="{{ url_for('exam.index_view') }}">试卷管理</a></li>
+            <li><a href="{{ url_for('question.index_view') }}">题目管理</a></li>
+            <li><a href="{{ url_for('answer.index_view') }}">成绩管理</a></li>
+            {% elif current_user.role == 2 %}
+            <li><a href="{{ url_for('user.create_view') }}">用户管理</a></li>
+            <li><a href="{{ url_for('csessioninfo.index_view') }}">微信用户查看</a></li>
+            {% endif %}
+        </ul>
+        {% else %}
+        <form method="POST" action="">
+            {{ form.hidden_tag() if form.hidden_tag }}
+            {% for f in form if f.type != 'CSRFTokenField' %}
+            <div>
+            {{ f.label }}
+            {{ f }}
+            {% if f.errors %}
+            <ul>
+                {% for e in f.errors %}
+                <li>{{ e }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            </div>
+            {% endfor %}
+            <button class="btn" type="submit">提交</button>
+        </form>
+        {{ link | safe }}
+        {% endif %}
+    </div>
+
+    <a class="btn btn-primary" href="/"><i class="icon-arrow-left icon-white"></i> 返回</a>
+</div>
+{% endblock body %}

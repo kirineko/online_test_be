@@ -54,3 +54,30 @@ class Exam(db.Model):
     total = db.Column(db.INTEGER, default=100)
     start_time = db.Column(db.DATETIME, nullable=False)
     end_time = db.Column(db.DATETIME, nullable=False)
+
+
+class User(db.Model):
+    __tablename__ = 'user'
+
+    id = db.Column(db.INTEGER, primary_key=True)
+    usernumber = db.Column(db.String(20, 'utf8mb4_unicode_ci'), nullable=False)
+    username = db.Column(db.String(50, 'utf8mb4_unicode_ci'), nullable=False)
+    password = db.Column(db.String(200, 'utf8mb4_unicode_ci'), nullable=False)
+    role = db.Column(db.SMALLINT, nullable=False)
+    dept = db.Column(db.String(50, 'utf8mb4_unicode_ci'))
+    openid = db.Column(db.String(100, 'utf8mb4_unicode_ci'))
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.id
