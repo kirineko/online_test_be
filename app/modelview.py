@@ -11,11 +11,10 @@ from .models import User
 
 # Define login and registration forms (for flask-login)
 class LoginForm(form.Form):
-    usernumber = fields.StringField(label='工号' ,validators=[validators.required()])
-    password = fields.PasswordField(label='密码' ,validators=[validators.required()])
+    usernumber = fields.StringField(label='工号', validators=[validators.required()])
+    password = fields.PasswordField(label='密码', validators=[validators.required()])
     role = fields.SelectField(
         label='角色', choices=[(1, '教师'), (2, '管理员')], coerce=int)
-
 
     def validate_login(self, field):
         user = self.get_user()
@@ -32,9 +31,9 @@ class LoginForm(form.Form):
 
 
 class RegistrationForm(form.Form):
-    usernumber = fields.StringField(label='工号' ,validators=[validators.required()])
+    usernumber = fields.StringField(label='工号', validators=[validators.required()])
     username = fields.StringField(label='用户名', validators=[validators.required()])
-    password = fields.PasswordField(label='密码' ,validators=[validators.required()])
+    password = fields.PasswordField(label='密码', validators=[validators.required()])
     role = fields.SelectField(
         label='角色', choices=[(1, '教师'), (2, '管理员')], coerce=int)
 
@@ -131,7 +130,6 @@ class AnswerModelView(ModelView):
     def is_accessible(self):
         return login.current_user.is_authenticated and login.current_user.role == 1
 
-
     column_labels = {
         'openid': '用户编号',
         'gid': '试卷编号',
@@ -169,9 +167,7 @@ class UserModelView(ModelView):
             'coerce': int
         }
     }
-    
     form_excluded_columns = ['openid']
-
     column_exclude_list = ['openid']
 
 
