@@ -48,7 +48,6 @@ def getanswer():
 
     results = _getscore(submit_answers, std_answers)
     results['gname'] = answer.gname
-    print(answer.submit_time)
     results['submit_time'] = str(answer.submit_time)
     return jsonsucc(results)
 

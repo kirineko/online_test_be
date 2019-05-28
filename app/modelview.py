@@ -162,7 +162,8 @@ class UserModelView(ModelView):
         'role': {
             'choices': {
                 (1, '教师'),
-                (2, '管理员')
+                (2, '管理员'),
+                (3, '学生')
             },
             'coerce': int
         }
